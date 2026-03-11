@@ -58,6 +58,22 @@ npm start
 
 ```
 
+## Swagger API Docs
+
+Con el servidor en ejecución, la documentación Swagger queda disponible en:
+
+```text
+http://localhost:8080/apidocs
+```
+
+La especificación OpenAPI documenta los módulos requeridos de:
+
+- Sessions
+- Pets
+- Adoptions
+
+Los archivos de documentación están organizados dentro de `src/docs`.
+
 ## 📍 Endpoints Nuevos
 
 Para esta pre-entrega se ha habilitado el siguiente endpoint de acuerdo a la consigna:

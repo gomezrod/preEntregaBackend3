@@ -1,0 +1,165 @@
+tags:
+  - name: Sessions
+    description: Endpoints de autenticacion y sesion.
+
+paths:
+  /api/sessions/register:
+    post:
+      tags:
+        - Sessions
+      summary: Registrar un nuevo usuario
+      description: Crea un usuario nuevo si el email no existe previamente.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterRequest'
+      responses:
+        '200':
+          description: Usuario registrado correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterSuccess'
+        '400':
+          description: Datos incompletos o usuario existente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/sessions/login:
+    post:
+      tags:
+        - Sessions
+      summary: Iniciar sesion
+      description: Valida credenciales, firma un JWT y lo devuelve en la cookie coderCookie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+      responses:
+        '200':
+          description: Login exitoso.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: coderCookie=token; Max-Age=3600; Path=/
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Logged in
+                required:
+                  - status
+                  - message
+        '400':
+          description: Datos incompletos o password incorrecta.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Usuario no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/sessions/current:
+    get:
+      tags:
+        - Sessions
+      summary: Obtener usuario autenticado
+      description: Lee la cookie coderCookie y devuelve el usuario del token JWT.
+      security:
+        - coderCookieAuth: []
+      responses:
+        '200':
+          description: Usuario autenticado obtenido correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUserResponse'
+  /api/sessions/unprotectedLogin:
+    get:
+      tags:
+        - Sessions
+      summary: Login sin DTO de proteccion
+      description: Inicia sesion usando el usuario completo y devuelve la cookie unprotectedCookie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+      responses:
+        '200':
+          description: Login exitoso.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: unprotectedCookie=token; Max-Age=3600; Path=/
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Unprotected Logged in
+                required:
+                  - status
+                  - message
+        '400':
+          description: Datos incompletos o password incorrecta.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Usuario no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/sessions/unprotectedCurrent:
+    get:
+      tags:
+        - Sessions
+      summary: Obtener usuario desde unprotectedCookie
+      description: Devuelve el usuario almacenado en el JWT de la cookie unprotectedCookie.
+      parameters:
+        - in: cookie
+          name: unprotectedCookie
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuario recuperado correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: '#/components/schemas/User'
+                required:
+                  - status
+                  - payload

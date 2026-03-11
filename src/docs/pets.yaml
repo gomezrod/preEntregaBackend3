@@ -1,0 +1,129 @@
+tags:
+  - name: Pets
+    description: Endpoints para gestion de mascotas.
+
+paths:
+  /api/pets:
+    get:
+      tags:
+        - Pets
+      summary: Obtener todas las mascotas
+      responses:
+        '200':
+          description: Listado de mascotas obtenido correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PetListResponse'
+    post:
+      tags:
+        - Pets
+      summary: Crear una mascota
+      description: Crea una mascota a partir de un body JSON.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PetBase'
+      responses:
+        '200':
+          description: Mascota creada correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PetResponse'
+        '400':
+          description: Datos incompletos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/pets/withimage:
+    post:
+      tags:
+        - Pets
+      summary: Crear una mascota con imagen
+      description: Recibe datos de mascota e imagen usando multipart/form-data.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PetWithImageRequest'
+      responses:
+        '200':
+          description: Mascota creada correctamente con imagen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PetResponse'
+        '400':
+          description: Datos incompletos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/pets/{pid}:
+    put:
+      tags:
+        - Pets
+      summary: Actualizar una mascota
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+          description: ID de la mascota.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PetUpdateRequest'
+      responses:
+        '200':
+          description: Mascota actualizada correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: pet updated
+                required:
+                  - status
+                  - message
+    delete:
+      tags:
+        - Pets
+      summary: Eliminar una mascota
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+          description: ID de la mascota.
+      responses:
+        '200':
+          description: Mascota eliminada correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: pet deleted
+                required:
+                  - status
+                  - message

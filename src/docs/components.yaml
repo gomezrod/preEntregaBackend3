@@ -1,0 +1,287 @@
+components:
+  securitySchemes:
+    coderCookieAuth:
+      type: apiKey
+      in: cookie
+      name: coderCookie
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        error:
+          type: string
+          example: Incomplete values
+      required:
+        - status
+        - error
+    SuccessMessage:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Operation completed
+      required:
+        - status
+        - message
+    UserRegisterRequest:
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: Juan
+        last_name:
+          type: string
+          example: Perez
+        email:
+          type: string
+          format: email
+          example: juan@example.com
+        password:
+          type: string
+          format: password
+          example: secret123
+      required:
+        - first_name
+        - last_name
+        - email
+        - password
+    UserLoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: juan@example.com
+        password:
+          type: string
+          format: password
+          example: secret123
+      required:
+        - email
+        - password
+    AuthenticatedUser:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Juan Perez
+        role:
+          type: string
+          example: user
+        email:
+          type: string
+          format: email
+          example: juan@example.com
+      required:
+        - name
+        - role
+        - email
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 67c9e6d0f809ab12ef345678
+        first_name:
+          type: string
+          example: Juan
+        last_name:
+          type: string
+          example: Perez
+        email:
+          type: string
+          format: email
+          example: juan@example.com
+        role:
+          type: string
+          example: user
+        pets:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                example: 67c9e6d0f809ab12ef345679
+      required:
+        - _id
+        - first_name
+        - last_name
+        - email
+        - role
+        - pets
+    PetBase:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Firulais
+        specie:
+          type: string
+          example: Perro
+        birthDate:
+          type: string
+          example: 2020-01-15
+      required:
+        - name
+        - specie
+        - birthDate
+    Pet:
+      allOf:
+        - $ref: '#/components/schemas/PetBase'
+        - type: object
+          properties:
+            _id:
+              type: string
+              example: 67c9e6d0f809ab12ef345679
+            adopted:
+              type: boolean
+              example: false
+            owner:
+              type: string
+              nullable: true
+              example: 67c9e6d0f809ab12ef345678
+            image:
+              type: string
+              example: D:/project/src/public/img/1710000000000-firulais.png
+          required:
+            - _id
+            - adopted
+    PetUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Firulais actualizado
+        specie:
+          type: string
+          example: Perro
+        birthDate:
+          type: string
+          example: 2020-01-15
+        adopted:
+          type: boolean
+          example: true
+        owner:
+          type: string
+          example: 67c9e6d0f809ab12ef345678
+        image:
+          type: string
+          example: D:/project/src/public/img/1710000000000-firulais.png
+    PetWithImageRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Luna
+        specie:
+          type: string
+          example: Gato
+        birthDate:
+          type: string
+          example: 2021-08-22
+        image:
+          type: string
+          format: binary
+      required:
+        - name
+        - specie
+        - birthDate
+        - image
+    Adoption:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 67c9e6d0f809ab12ef345680
+        owner:
+          oneOf:
+            - type: string
+              example: 67c9e6d0f809ab12ef345678
+            - $ref: '#/components/schemas/User'
+        pet:
+          oneOf:
+            - type: string
+              example: 67c9e6d0f809ab12ef345679
+            - $ref: '#/components/schemas/Pet'
+      required:
+        - _id
+        - owner
+        - pet
+    RegisterSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: string
+          example: 67c9e6d0f809ab12ef345678
+      required:
+        - status
+        - payload
+    CurrentUserResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          $ref: '#/components/schemas/AuthenticatedUser'
+      required:
+        - status
+        - payload
+    PetListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pet'
+      required:
+        - status
+        - payload
+    PetResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          $ref: '#/components/schemas/Pet'
+      required:
+        - status
+        - payload
+    AdoptionListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/Adoption'
+      required:
+        - status
+        - payload
+    AdoptionResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          $ref: '#/components/schemas/Adoption'
+      required:
+        - status
+        - payload

@@ -2,12 +2,14 @@ import './config/dotenv.js';
 import express from 'express';
 import { conectarDB } from './config/db.js';
 import cookieParser from 'cookie-parser';
+import swaggerUi from 'swagger-ui-express';
 
 import usersRouter from './routes/users.routes.js';
 import petsRouter from './routes/pets.routes.js';
 import adoptionsRouter from './routes/adoption.routes.js';
 import sessionsRouter from './routes/sessions.routes.js';
 import mocksRouter from './routes/mocks.routes.js'
+import swaggerSpecs from './docs/swagger.js';
 
 const app = express();
 const PORT = process.env.PORT||8080;
@@ -17,6 +19,8 @@ conectarDB(url, dbName);
 
 app.use(express.json());
 app.use(cookieParser());
+
+app.use('/apidocs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 app.use('/api/users',usersRouter);
 app.use('/api/pets',petsRouter);

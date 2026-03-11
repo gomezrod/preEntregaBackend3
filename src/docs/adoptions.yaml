@@ -1,0 +1,90 @@
+tags:
+  - name: Adoptions
+    description: Endpoints para gestion de adopciones.
+
+paths:
+  /api/adoptions:
+    get:
+      tags:
+        - Adoptions
+      summary: Obtener todas las adopciones
+      responses:
+        '200':
+          description: Listado de adopciones obtenido correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdoptionListResponse'
+  /api/adoptions/{aid}:
+    get:
+      tags:
+        - Adoptions
+      summary: Obtener una adopcion por ID
+      parameters:
+        - in: path
+          name: aid
+          required: true
+          schema:
+            type: string
+          description: ID de la adopcion.
+      responses:
+        '200':
+          description: Adopcion obtenida correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdoptionResponse'
+        '404':
+          description: La adopcion no existe.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/adoptions/{uid}/{pid}:
+    post:
+      tags:
+        - Adoptions
+      summary: Crear una adopcion
+      description: Asocia una mascota a un usuario si ambos existen y la mascota no fue adoptada.
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+          description: ID del usuario.
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+          description: ID de la mascota.
+      responses:
+        '200':
+          description: Adopcion creada correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Pet adopted
+                required:
+                  - status
+                  - message
+        '400':
+          description: La mascota ya esta adoptada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Usuario o mascota no encontrados.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
