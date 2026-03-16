@@ -58,12 +58,22 @@ npm start
 
 ```
 
+## Tests funcionales
+
+Para ejecutar los tests funcionales de los routers de Users y Pets:
+
+```bash
+npm test
+```
+
+La suite usa `mocha`, `chai`, `supertest` y una base temporal en memoria (`mongodb-memory-server`).
+
 ## Swagger API Docs
 
 Con el servidor en ejecución, la documentación Swagger queda disponible en:
 
 ```text
-http://localhost:8080/apidocs
+http://localhost:<PUERTO>/apidocs
 ```
 
 La especificación OpenAPI documenta los módulos requeridos de:
