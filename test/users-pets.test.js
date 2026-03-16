@@ -13,7 +13,9 @@ import petModel from '../src/dao/models/Pet.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const fixtureFilePath = path.join(__dirname, 'fixtures', 'pet-image.txt');
-const uploadsDirPath = path.join(__dirname, '..', 'src', 'public', 'img');
+const userDocumentFixturePath = path.join(__dirname, 'fixtures', 'user-document.txt');
+const petsUploadsDirPath = path.join(__dirname, '..', 'src', 'public', 'pets');
+const documentsUploadsDirPath = path.join(__dirname, '..', 'src', 'public', 'documents');
 
 describe('Tests funcionales - routers de Usuarios y Mascotas', function () {
     let mongoServer;
@@ -30,11 +32,16 @@ describe('Tests funcionales - routers de Usuarios y Mascotas', function () {
     });
 
     afterEach(async function () {
-        const files = await fs.readdir(uploadsDirPath);
-        const testUploads = files.filter((fileName) => fileName.endsWith('-pet-image.txt'));
-        await Promise.all(
-            testUploads.map((fileName) => fs.unlink(path.join(uploadsDirPath, fileName)))
-        );
+        const cleanupUploads = async (dirPath, expectedSuffix) => {
+            const files = await fs.readdir(dirPath);
+            const testUploads = files.filter((fileName) => fileName.endsWith(expectedSuffix));
+            await Promise.all(
+                testUploads.map((fileName) => fs.unlink(path.join(dirPath, fileName)))
+            );
+        };
+
+        await cleanupUploads(petsUploadsDirPath, '-pet-image.txt');
+        await cleanupUploads(documentsUploadsDirPath, '-user-document.txt');
     });
 
     after(async function () {
@@ -126,6 +133,34 @@ describe('Tests funcionales - routers de Usuarios y Mascotas', function () {
             expect(response.status).to.equal(200);
             expect(response.body).to.deep.equal({ status: 'success', message: 'User deleted' });
         });
+
+        it('POST /api/users/:uid/documents debería subir uno o más archivos y actualizar documents del usuario', async function () {
+            const createdUser = await userModel.create({
+                first_name: 'Clara',
+                last_name: 'Lopez',
+                email: 'clara@example.com',
+                password: 'hashed-password',
+                role: 'user'
+            });
+
+            const response = await request(app)
+                .post(`/api/users/${createdUser._id}/documents`)
+                .attach('documents', userDocumentFixturePath)
+                .attach('documents', userDocumentFixturePath);
+
+            expect(response.status).to.equal(200);
+            expect(response.body).to.have.property('status', 'success');
+            expect(response.body).to.have.property('payload').that.is.an('array').with.length(2);
+            response.body.payload.forEach((document) => {
+                expect(document).to.have.property('name', 'user-document.txt');
+                expect(document).to.have.property('reference').that.includes('public/documents');
+            });
+
+            const updatedUser = await userModel.findById(createdUser._id).lean();
+            expect(updatedUser.documents).to.be.an('array').with.length(2);
+            expect(updatedUser.documents[0].name).to.equal('user-document.txt');
+            expect(updatedUser.documents[0].reference).to.include('public/documents');
+        });
     });
 
     describe('Router Pets - /api/pets', function () {
@@ -189,11 +224,11 @@ describe('Tests funcionales - routers de Usuarios y Mascotas', function () {
             expect(response.body).to.have.property('status', 'success');
             expect(response.body.payload).to.have.property('_id');
             expect(response.body.payload).to.have.property('image').that.is.a('string');
-            expect(response.body.payload.image).to.include('public/img');
+            expect(response.body.payload.image).to.include('public/pets');
 
             const createdPet = await petModel.findById(response.body.payload._id).lean();
             expect(createdPet).to.not.equal(null);
-            expect(createdPet.image).to.be.a('string').and.include('public/img');
+            expect(createdPet.image).to.be.a('string').and.include('public/pets');
         });
 
         it('PUT /api/pets/:pid debería actualizar la mascota y mantener el contrato de respuesta', async function () {

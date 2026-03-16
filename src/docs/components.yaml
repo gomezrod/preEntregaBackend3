@@ -109,6 +109,15 @@ components:
               _id:
                 type: string
                 example: 67c9e6d0f809ab12ef345679
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDocument'
+        last_connection:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2026-03-16T10:30:00.000Z
       required:
         - _id
         - first_name
@@ -116,6 +125,19 @@ components:
         - email
         - role
         - pets
+        - documents
+    UserDocument:
+      type: object
+      properties:
+        name:
+          type: string
+          example: dni.pdf
+        reference:
+          type: string
+          example: D:/project/src/public/documents/1773694191000-dni.pdf
+      required:
+        - name
+        - reference
     PetBase:
       type: object
       properties:
@@ -149,7 +171,7 @@ components:
               example: 67c9e6d0f809ab12ef345678
             image:
               type: string
-              example: D:/project/src/public/img/1710000000000-firulais.png
+              example: D:/project/src/public/pets/1710000000000-firulais.png
           required:
             - _id
             - adopted
@@ -173,7 +195,7 @@ components:
           example: 67c9e6d0f809ab12ef345678
         image:
           type: string
-          example: D:/project/src/public/img/1710000000000-firulais.png
+          example: D:/project/src/public/pets/1710000000000-firulais.png
     PetWithImageRequest:
       type: object
       properties:
@@ -223,6 +245,19 @@ components:
         payload:
           type: string
           example: 67c9e6d0f809ab12ef345678
+      required:
+        - status
+        - payload
+    UploadDocumentsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDocument'
       required:
         - status
         - payload

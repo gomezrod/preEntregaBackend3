@@ -23,6 +23,7 @@ const options = {
     apis: [
         path.join(__dirname, 'components.yaml'),
         path.join(__dirname, 'sessions.yaml'),
+        path.join(__dirname, 'users.yaml'),
         path.join(__dirname, 'pets.yaml'),
         path.join(__dirname, 'adoptions.yaml')
     ]

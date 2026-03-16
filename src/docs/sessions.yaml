@@ -74,6 +74,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/sessions/logout:
+    post:
+      tags:
+        - Sessions
+      summary: Cerrar sesion actual
+      description: Limpia la cookie coderCookie y actualiza last_connection del usuario.
+      security:
+        - coderCookieAuth: []
+      responses:
+        '200':
+          description: Logout exitoso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Logged out
+                required:
+                  - status
+                  - message
+        '400':
+          description: No hay sesion activa.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Cookie/token invalido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/sessions/current:
     get:
       tags:

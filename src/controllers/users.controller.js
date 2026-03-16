@@ -1,4 +1,5 @@
 import { usersService } from "../services/index.js"
+import __dirname from "../utils/index.js";
 
 const getAllUsers = async(req,res)=>{
     const users = await usersService.getAll();
@@ -27,9 +28,32 @@ const deleteUser = async(req,res) =>{
     res.send({status:"success",message:"User deleted"})
 }
 
+const uploadDocuments = async (req, res) => {
+    const userId = req.params.uid;
+    const user = await usersService.getUserById(userId);
+    if (!user) return res.status(404).send({ status: "error", error: "User not found" });
+
+    const files = req.files || [];
+    if (!files.length) {
+        return res.status(400).send({ status: "error", error: "No documents uploaded" });
+    }
+
+    const mappedDocuments = files.map((file) => ({
+        name: file.originalname,
+        reference: `${__dirname}/../public/documents/${file.filename}`
+    }));
+
+    const currentDocuments = user.documents || [];
+    const updatedDocuments = [...currentDocuments, ...mappedDocuments];
+    await usersService.update(userId, { documents: updatedDocuments });
+
+    res.send({ status: "success", payload: mappedDocuments });
+}
+
 export default {
     deleteUser,
     getAllUsers,
     getUser,
-    updateUser
+    updateUser,
+    uploadDocuments
 }

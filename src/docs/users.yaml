@@ -1,0 +1,51 @@
+tags:
+  - name: Users
+    description: Endpoints para administracion de usuarios.
+
+paths:
+  /api/users/{uid}/documents:
+    post:
+      tags:
+        - Users
+      summary: Subir documentos de un usuario
+      description: Permite subir uno o multiples archivos y los agrega al arreglo documents del usuario.
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+          description: ID del usuario.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                documents:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - documents
+      responses:
+        '200':
+          description: Documentos cargados correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadDocumentsResponse'
+        '400':
+          description: No se enviaron archivos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Usuario no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
