@@ -36,7 +36,8 @@ npm install
 - Crea un archivo `.env` en la raíz del proyecto basándote en el ejemplo (si existe) o define las siguientes variables:
 ```env
 PORT=8080
-MONGO_URL=<tu_string_de_conexion_a_mongo>
+DB_URL=<tu_string_de_conexion_a_mongo>
+DB_NAME=adoptme
 
 ```
 
@@ -60,7 +61,7 @@ npm start
 
 ## Tests funcionales
 
-Para ejecutar los tests funcionales de los routers de Users y Pets:
+Para ejecutar los tests funcionales de los routers de Users, Pets, Sessions y Adoptions:
 
 ```bash
 npm test
@@ -81,8 +82,33 @@ La especificación OpenAPI documenta los módulos requeridos de:
 - Sessions
 - Pets
 - Adoptions
+- Users
 
 Los archivos de documentación están organizados dentro de `src/docs`.
+
+## Docker
+
+Se incluye un `Dockerfile` para generar una imagen reproducible del proyecto.
+
+### Build de imagen
+
+```bash
+docker build -t adoptme-backend:latest .
+```
+
+### Ejecución del contenedor
+
+```bash
+docker run --name adoptme-backend -p 8080:8080 -e PORT=8080 -e DB_URL=<tu_string_de_conexion_a_mongo> -e DB_NAME=adoptme adoptme-backend:latest
+```
+
+### Docker Hub
+
+La imagen se encuentra disponible públicamente en Docker Hub:
+
+```text
+https://hub.docker.com/repository/docker/gomezrod/adoptme-backend/
+```
 
 ## 📍 Endpoints Nuevos
 

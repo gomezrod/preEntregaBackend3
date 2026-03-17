@@ -261,6 +261,30 @@ components:
       required:
         - status
         - payload
+    UserListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+      required:
+        - status
+        - payload
+    UserResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          $ref: '#/components/schemas/User'
+      required:
+        - status
+        - payload
     CurrentUserResponse:
       type: object
       properties:
