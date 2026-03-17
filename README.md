@@ -1,6 +1,6 @@
-# AdoptMe - Backend Integration (Pre-entrega 1)
+# AdoptMe - Entrega Final
 
-Este repositorio contiene la **primera pre-entrega** del curso de Backend III. El proyecto se basa en la arquitectura de servidor para un sistema de adopción de mascotas (**AdoptMe**), al cual se le ha integrado un módulo de **Mocking** para la generación de data de prueba, cumpliendo con los requisitos especificados en `./consignas.txt`.
+Este repositorio contiene la **entrega final** del curso de Backend III. El proyecto se basa en la arquitectura de servidor para un sistema de adopción de mascotas (**AdoptMe**).
 
 ## 📋 Descripción del Proyecto
 
